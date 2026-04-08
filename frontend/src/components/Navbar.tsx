@@ -38,14 +38,19 @@ export function Navbar() {
       </div>
 
       {/* Right Content */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <DefaultToggle />
         <Link
-          href="/login"
-          className="flex items-center gap-2 bg-transparent border-[1.5px] border-[#1A1A1A] text-[#1A1A1A] px-5 py-2.5 rounded-[6px] text-sm font-medium hover:bg-[#1A1A1A] hover:text-white transition-all"
+          href="/patient-portal/login"
+          className="flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white px-4 py-2.5 rounded-[6px] text-sm font-semibold hover:shadow-lg hover:shadow-teal-500/25 transition-all"
         >
-          <MapPin size={16} />
-          <span>Contact Us</span>
+          🏥 Patient Portal
+        </Link>
+        <Link
+          href="/login"
+          className="flex items-center gap-2 bg-transparent border-[1.5px] border-[#1A1A1A] text-[#1A1A1A] px-4 py-2.5 rounded-[6px] text-sm font-medium hover:bg-[#1A1A1A] hover:text-white transition-all"
+        >
+          Doctor Login
         </Link>
       </div>
     </nav>

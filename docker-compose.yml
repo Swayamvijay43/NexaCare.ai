@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nexacare
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   frontend:
     build: 
       context: ./frontend
@@ -8,8 +24,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://backend:5000/api
-      - NEXT_PUBLIC_ML_URL=http://ml-service:8000
+      - NEXT_PUBLIC_API_URL=http://localhost:5000/api
+      - NEXT_PUBLIC_ML_URL=http://localhost:8000
     depends_on:
       - backend
       - ml-service
@@ -22,10 +38,13 @@ services:
       - "5000:5000"
     environment:
       - PORT=5000
-      - DATABASE_URL=${DATABASE_URL:-postgresql://db:5432/nexacare}
-      - JWT_SECRET=${JWT_SECRET:-nexacare_secret_2026}
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/nexacare
+      - JWT_SECRET=nexacare_secret_2026
       - ML_SERVICE_URL=http://ml-service:8000
-      - FRONTEND_URL=http://frontend:3000
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   ml-service:
     build:
@@ -35,3 +54,6 @@ services:
       - "8000:8000"
     environment:
       - PORT=8000
+
+volumes:
+  pgdata:

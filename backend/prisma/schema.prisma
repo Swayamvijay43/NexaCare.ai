@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -8,21 +9,23 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(uuid())
+  id            String         @id @default(uuid())
   name          String
-  role          String
-  email         String   @unique
+  role          String         // "clinician", "admin", "patient"
+  email         String         @unique
   password_hash String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  healthRecords HealthRecord[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model Patient {
   id           String   @id @default(uuid())
   name         String
   age          Int
+  gender       String   @default("Unknown")
   diagnosis    String
-  vitals       Json     // e.g., { heartRate: 80, spO2: 95, temperature: 98.6 }
+  vitals       Json     // { heartRate, bloodPressure, temperature, oxygenLevel, riskReasons }
   risk_score   Float    @default(0.0)
   alerts       Alert[]
   createdAt    DateTime @default(now())
@@ -46,4 +49,13 @@ model Forecast {
   staff_needed    Int
   icu_probability Float
   createdAt       DateTime @default(now())
+}
+
+model HealthRecord {
+  id                String   @id @default(uuid())
+  user_id           String
+  user              User     @relation(fields: [user_id], references: [id])
+  input_data        Json     // patient-submitted health data
+  prediction_result Json     // ML prediction response
+  createdAt         DateTime @default(now())
 }

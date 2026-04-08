@@ -1,4 +1,4 @@
-import { Linkedin, Twitter } from "lucide-react";
+import { Linkedin, Twitter, User, Stethoscope } from "lucide-react";
 import Image from "next/image";
 import { GooeyTextDemo } from "@/components/GooeyTextDemo";
 import Link from "next/link";
@@ -25,18 +25,27 @@ export function Hero() {
           </p>
           
           {/* CTA Row */}
-          <div className="flex flex-wrap items-center gap-6 mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-16 max-w-xl">
             <Link
               href="/login?role=clinician"
-              className="bg-[#1A1A1A] text-white px-7 py-3 rounded-[6px] text-[14px] font-medium hover:bg-[#333333] transition-colors"
+              className="flex flex-col items-start p-5 rounded-xl border-2 border-[#1A1A1A] bg-[#1A1A1A] text-white hover:bg-[#333333] transition-colors group"
             >
-              Login as Clinician
+              <div className="flex items-center gap-2 font-display font-bold text-[16px] mb-1">
+                <Stethoscope size={18} className="text-[#C8A96E]" />
+                Login as Clinician
+              </div>
+              <p className="text-white/70 text-[13px] leading-snug">Access the predictive patient monitoring dashboard</p>
             </Link>
+            
             <Link
-              href="/login?role=admin"
-              className="bg-transparent border border-[#1A1A1A] text-[#1A1A1A] px-7 py-3 rounded-[6px] text-[14px] font-medium hover:bg-[#1A1A1A] hover:text-white transition-colors"
+              href="/patient-portal/login"
+              className="flex flex-col items-start p-5 rounded-xl border-2 border-[#0F766E] bg-teal-50 text-[#1A1A1A] hover:bg-[#0F766E] hover:text-white transition-colors group"
             >
-              Login as Admin
+              <div className="flex items-center gap-2 font-display font-bold text-[16px] mb-1">
+                <User size={18} className="text-[#0F766E] group-hover:text-white transition-colors" />
+                Login as Patient
+              </div>
+              <p className="text-[#6B6B6B] group-hover:text-white/80 text-[13px] leading-snug transition-colors">Access your health dashboard & predictions</p>
             </Link>
           </div>
           

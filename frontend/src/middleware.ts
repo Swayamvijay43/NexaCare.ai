@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   const role = request.cookies.get('nexacare_role')?.value;
   const { pathname } = request.nextUrl;
 
-  // Protect /dashboard and all sub-routes
+  // Protect /dashboard and all sub-routes (Doctor Portal)
   if (pathname.startsWith('/dashboard')) {
     if (!token) {
       return NextResponse.redirect(new URL('/login', request.url));
@@ -19,10 +19,27 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // If visiting /login with token -> redirect to /dashboard
+  // Protect /patient-portal (but not /patient-portal/login)
+  if (pathname.startsWith('/patient-portal') && !pathname.startsWith('/patient-portal/login')) {
+    if (!token) {
+      return NextResponse.redirect(new URL('/patient-portal/login', request.url));
+    }
+  }
+
+  // If visiting /login with token -> redirect to appropriate dashboard
   if (pathname.startsWith('/login')) {
     if (token) {
+      if (role === 'patient') {
+        return NextResponse.redirect(new URL('/patient-portal', request.url));
+      }
       return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+  }
+
+  // If visiting /patient-portal/login with token -> redirect to patient portal
+  if (pathname === '/patient-portal/login') {
+    if (token) {
+      return NextResponse.redirect(new URL('/patient-portal', request.url));
     }
   }
 
@@ -30,5 +47,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login'],
+  matcher: ['/dashboard/:path*', '/login', '/patient-portal/:path*'],
 };
